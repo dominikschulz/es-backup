@@ -11,6 +11,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/cenkalti/backoff"
+	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/alexflint/go-arg"
 	"github.com/danryan/env"
@@ -87,6 +88,10 @@ type Snapshot struct {
 	EndTime  time.Time `json:"end_time"`
 }
 
+func (s Snapshot) String() string {
+	return fmt.Sprintf("%s (finished at %s with %s)", s.Snapshot, s.EndTime.Format(time.RFC3339), s.State)
+}
+
 func (s Snapshots) Len() int {
 	return len(s)
 }
@@ -129,24 +134,37 @@ func backupAndRemove(c *Config) error {
 		Bucket: c.Name,
 	}
 
-	log.Debugf("Creating snapshot ...")
-	err := client.CreateSnapshot()
+	log.Debugf("Fetching snapshot ...")
+	snaps, err := client.ListSnapshots()
 	if err != nil {
 		return err
 	}
 
-	victims, err := client.ListSnapshots()
-	if err != nil {
-		return err
+	for d, s := range snaps {
+		log.Debugf("Snapshot #%d: %s", d, s)
 	}
 
-	for i := len(victims) - (c.Retention + 1); i >= 0; i-- {
-		iname := victims[i]
-		err := client.DeleteSnapshot(iname.Snapshot)
+	lastSnap := snaps[len(snaps)-1]
+	nextSnap := lastSnap.EndTime.Add(time.Duration(c.Interval) * time.Hour)
+	if len(snaps) < 1 || nextSnap.Before(time.Now()) {
+		log.Debugf("Creating snapshot ...")
+		err = client.CreateSnapshot()
 		if err != nil {
-			log.Printf("Failed to delete snapshot %s: %s", iname, err)
-		} else {
-			log.Printf("Deleted snapshot %s", iname)
+			return err
+		}
+	} else {
+		log.Debugf("Not creating snapshot. Next is due at %s", nextSnap.Format(time.RFC3339))
+	}
+
+	keepTS := time.Now().Add(-24 * time.Hour * time.Duration(c.Retention))
+	for _, v := range snaps {
+		if v.EndTime.Before(keepTS) {
+			err := client.DeleteSnapshot(v.Snapshot)
+			if err != nil {
+				log.Printf("Failed to delete snapshot %s: %s", v, err)
+			} else {
+				log.Printf("Deleted snapshot %s", v)
+			}
 		}
 	}
 	return nil
@@ -158,8 +176,29 @@ func main() {
 		log.Fatalf("Failed to parse config: %s", err)
 		return
 	}
+
+	runs := prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "elasticsearch_backup_runs_total",
+			Help: "Number of elasticsearch backup runs",
+		},
+		[]string{"status"},
+	)
+	runs = prometheus.MustRegisterOrGet(runs).(*prometheus.CounterVec)
+	duration := prometheus.NewSummaryVec(
+		prometheus.SummaryOpts{
+			Name: "elasticsearch_backup_duration",
+			Help: "Duration of elasticsearch backup runs",
+		},
+		[]string{"operation"},
+	)
+	duration = prometheus.MustRegisterOrGet(duration).(*prometheus.SummaryVec)
+
+	go listen()
+
 	interval := time.Hour * time.Duration(cfg.Interval)
 	for {
+		t0 := time.Now()
 		opFunc := func() error {
 			return backupAndRemove(cfg)
 		}
@@ -172,9 +211,14 @@ func main() {
 		bo.MaxElapsedTime = 15 * time.Minute
 		err := backoff.RetryNotify(opFunc, bo, logFunc)
 		if err != nil {
+			runs.WithLabelValues("failed").Inc()
 			log.Warnf("Failed to delete snapshots: %s", err)
 			continue
 		}
+		runs.WithLabelValues("ok").Inc()
+		d0 := float64(time.Since(t0)) / float64(time.Microsecond)
+		duration.WithLabelValues("backup").Observe(d0)
+
 		if interval < time.Second {
 			break
 		}
@@ -182,4 +226,27 @@ func main() {
 		time.Sleep(interval)
 	}
 	os.Exit(0)
+}
+
+func listen() {
+	listen := os.Getenv("LISTEN")
+	if listen == "" {
+		listen = ":8080"
+	}
+	s := &http.Server{
+		Addr:    listen,
+		Handler: requestHandler(),
+	}
+	log.Printf("Listening on %s", listen)
+	log.Errorf("Failed to listen on %s: %s", listen, s.ListenAndServe())
+}
+
+func requestHandler() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.Handle("/metrics", prometheus.Handler())
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "OK", http.StatusOK)
+	})
+	mux.HandleFunc("/", http.NotFound)
+	return mux
 }
