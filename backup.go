@@ -22,9 +22,16 @@ func backupAndRemove(c *Config) error {
 		log.Debugf("Snapshot #%d: %s", d, s)
 	}
 
-	lastSnap := snaps[len(snaps)-1]
-	nextSnap := lastSnap.EndTime.Add(time.Duration(c.Interval) * time.Hour)
-	if len(snaps) < 1 || nextSnap.Before(time.Now()) {
+	needSnap := false
+	nextSnap := time.Now()
+	if len(snaps) < 1 {
+		needSnap = true
+	} else {
+		lastSnap := snaps[len(snaps)-1]
+		nextSnap = lastSnap.EndTime.Add(time.Duration(c.Interval) * time.Hour)
+		needSnap = nextSnap.Before(time.Now())
+	}
+	if needSnap {
 		log.Debugf("Creating snapshot ...")
 		name, err := client.CreateSnapshot()
 		if err != nil {
