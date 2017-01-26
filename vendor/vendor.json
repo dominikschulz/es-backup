@@ -1,0 +1,124 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "SdEcxwaW92m0H3pao3BPj2ZpvaU=",
+			"comment": "v0.8.7-53-g446d1c1",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "446d1c146faa8ed3f4218f056fcd165f6bcfda81"
+		},
+		{
+			"checksumSHA1": "nzlOSMeCbqlk+vPLJht+jOni98A=",
+			"comment": "v0.8.7-53-g446d1c1",
+			"path": "github.com/Sirupsen/logrus/examples/basic",
+			"revision": "446d1c146faa8ed3f4218f056fcd165f6bcfda81"
+		},
+		{
+			"checksumSHA1": "wTMzbLJF+jsrRh5Mk9s0L8HagUU=",
+			"comment": "v0.8.7-53-g446d1c1",
+			"path": "github.com/Sirupsen/logrus/examples/hook",
+			"revision": "446d1c146faa8ed3f4218f056fcd165f6bcfda81"
+		},
+		{
+			"checksumSHA1": "G+cbfu2L5pyLQyStaoR5GX0SgBI=",
+			"comment": "v0.8.7-53-g446d1c1",
+			"path": "github.com/Sirupsen/logrus/formatters/logstash",
+			"revision": "446d1c146faa8ed3f4218f056fcd165f6bcfda81"
+		},
+		{
+			"checksumSHA1": "BTcyA6tXJB1HHopuuYhi1XrtR+s=",
+			"comment": "v0.8.7-53-g446d1c1",
+			"path": "github.com/Sirupsen/logrus/hooks/syslog",
+			"revision": "446d1c146faa8ed3f4218f056fcd165f6bcfda81"
+		},
+		{
+			"checksumSHA1": "DRTNt1FH7FSX5JnEbRSYRtVmq5g=",
+			"path": "github.com/alexflint/go-arg",
+			"revision": "ce5525d7767a3016c46f0f07e26a5db4b26372c1"
+		},
+		{
+			"checksumSHA1": "4QnLdmB1kG3N+KlDd1N+G9TWAGQ=",
+			"path": "github.com/beorn7/perks/quantile",
+			"revision": "b965b613227fddccbfffe13eae360ed3fa822f8d"
+		},
+		{
+			"checksumSHA1": "b55VMQZmwBl4iSpI9BfdesJI9vQ=",
+			"path": "github.com/cenkalti/backoff",
+			"revision": "4dc77674aceaabba2c7e3da25d4c823edfb73f99"
+		},
+		{
+			"checksumSHA1": "qg0nOY+6oS/INKDTuQz3/RHZXHA=",
+			"path": "github.com/danryan/env",
+			"revision": "bc567f4d372a17eb756004cdbfd8458ecc04b07e"
+		},
+		{
+			"checksumSHA1": "qLW92HFuF1oBvOEBkO722WnRnPU=",
+			"path": "github.com/danryan/env/examples",
+			"revision": "bc567f4d372a17eb756004cdbfd8458ecc04b07e"
+		},
+		{
+			"checksumSHA1": "GXnHOECRJoqwJkpiISa+Vc7CHnw=",
+			"path": "github.com/danryan/env/examples/simple",
+			"revision": "bc567f4d372a17eb756004cdbfd8458ecc04b07e"
+		},
+		{
+			"checksumSHA1": "/78vseA9Nzq4noxZuOebO+1UXRU=",
+			"path": "github.com/golang/protobuf/proto",
+			"revision": "68415e7123da32b07eab49c96d2c4d6158360e9b"
+		},
+		{
+			"checksumSHA1": "/r044HcS9hElG0zUJxkOF3wfdNI=",
+			"path": "github.com/golang/protobuf/proto/proto3_proto",
+			"revision": "68415e7123da32b07eab49c96d2c4d6158360e9b"
+		},
+		{
+			"checksumSHA1": "Vd+TNP0O2nxCrjqc9PF9McR2aFc=",
+			"path": "github.com/golang/protobuf/proto/testdata",
+			"revision": "68415e7123da32b07eab49c96d2c4d6158360e9b"
+		},
+		{
+			"checksumSHA1": "awh/SjrQU86UYq0xDdwHKMFI2pw=",
+			"path": "github.com/golang/protobuf/protoc-gen-go/descriptor",
+			"revision": "68415e7123da32b07eab49c96d2c4d6158360e9b"
+		},
+		{
+			"checksumSHA1": "Q2vw4HZBbnU8BLFt8VrzStwqSJg=",
+			"path": "github.com/matttproud/golang_protobuf_extensions/pbutil",
+			"revision": "d0c3fe89de86839aecf2e0579c40ba3bb336a453"
+		},
+		{
+			"checksumSHA1": "s1sQ9epPRLoKRzeagHffd//B1Ew=",
+			"comment": "0.7.0-68-g67994f1",
+			"path": "github.com/prometheus/client_golang/prometheus",
+			"revision": "67994f177195311c3ea3d4407ed0175e34a4256f"
+		},
+		{
+			"checksumSHA1": "DvwvOlPNAgRntBzt3b3OSRMS2N4=",
+			"comment": "model-0.0.2-12-gfa8ad6f",
+			"path": "github.com/prometheus/client_model/go",
+			"revision": "fa8ad6fec33561be4280a8f0514318c79d7f6cb6"
+		},
+		{
+			"checksumSHA1": "9qo/tkVxlpKy76lQyCnAp2E9tOo=",
+			"path": "github.com/prometheus/common/expfmt",
+			"revision": "56b90312e937d43b930f06a59bf0d6a4ae1944bc"
+		},
+		{
+			"checksumSHA1": "GWlM3d2vPYyNATtTFgftS10/A9w=",
+			"path": "github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg",
+			"revision": "56b90312e937d43b930f06a59bf0d6a4ae1944bc"
+		},
+		{
+			"checksumSHA1": "YZGIT+dFrUY/kfsVIBTIzZ8Y8fs=",
+			"path": "github.com/prometheus/common/model",
+			"revision": "56b90312e937d43b930f06a59bf0d6a4ae1944bc"
+		},
+		{
+			"checksumSHA1": "kO2MAzPuortudABaRd7fY+7EaoM=",
+			"path": "github.com/prometheus/procfs",
+			"revision": "406e5b7bfd8201a36e2bb5f7bdae0b03380c2ce8"
+		}
+	],
+	"rootPath": "github.com/dominikschulz/es-backup"
+}
