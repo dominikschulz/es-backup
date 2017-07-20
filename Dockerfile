@@ -1,11 +1,12 @@
-FROM golang:1.5.1
-MAINTAINER Dominik Schulz <dominik.schulz@gauner.org>
+FROM golang:1.8-alpine3.6 as builder
 
-ENV GOPATH /go/src/github.com/dominikschulz/es-backup/Godeps/_workspace/:/go
-
-ADD .   /go/src/github.com/dominikschulz/es-backup
+ADD . /go/src/github.com/dominikschulz/es-backup
 WORKDIR /go/src/github.com/dominikschulz/es-backup
 
 RUN go install
 
-CMD [ "/go/bin/es-backup" ]
+FROM alpine:3.6
+
+COPY --from=builder /go/bin/es-backup /usr/local/bin/es-backup
+CMD [ "/usr/local/bin/es-backup" ]
+EXPOSE 8080
